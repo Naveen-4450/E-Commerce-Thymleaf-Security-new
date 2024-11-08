@@ -1,0 +1,225 @@
+/* Basic Reset */
+body, h1, p, ul, li, a, img {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+h1{
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    position: relative;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+
+/* Main Container */
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+/* Product Grid */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Product Card */
+.product-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    width: 300px;
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display : block;
+}
+
+.product-info {
+    padding: 15px;
+}
+
+.product-info h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.product-info p {
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-size: 1.25em;
+    color: #b12704;
+}
+
+
+.add-to-cart-btn{
+    background: #ff9900;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+
+
+    padding: 10px 15px; /* Adjust padding */
+    font-size: 14px; /* Adjust font size */
+    margin: 5px; /* Add margin to separate buttons */
+    cursor: pointer; /* Add pointer cursor for better UX */
+}
+
+.add-to-cart-btn:hover {
+    background: #e87c00;
+}
+
+
+.add-to-wishlist-btn{
+     background: #ff5722;
+     color: #fff;
+     border: none;
+     border-radius: 5px;
+     transition: background 0.3s ease;
+
+    padding: 10px 15px; /* Adjust padding */
+    font-size: 14px; /* Adjust font size */
+    margin: 5px; /* Add margin to separate buttons */
+    cursor: pointer; /* Add pointer cursor for better UX */
+    }
+
+.add-to-wishlist-btn:hover {
+    background: #e64a19;
+}
+
+/* Flexbox layout for buttons */
+.button-container {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    margin-top: 10px; /* Space above buttons */
+}
+
+.order-placing-btn {
+    background:#ADD8E6;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+.order-placing-btn:hover {
+    background: #1F51FF ;
+    /* thick blue#000080*/
+}
+
+
+
+/* Footer Styling */
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+.add-to-cart-btn {
+    background: #ff9900;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+     margin-bottom: 20px;
+}
+
+.add-to-cart-btn:hover {
+    background: #e87c00;
+}
+
+
+.add-to-wishlist-btn {
+    background: #ff5722;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+
+}
+
+.add-to-wishlist-btn:hover {
+    background: #e64a19;
+}
+*/
+

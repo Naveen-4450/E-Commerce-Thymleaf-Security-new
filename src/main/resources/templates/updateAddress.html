@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Customer Address</title>
+    <link rel="stylesheet" th:href="@{/customerAddressStyles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 80px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            font-size: 28px;
+            color: #333;
+            border-bottom: 2px solid #e1e1e1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+                cursor: pointer;
+            font-weight: bold;
+        }
+        .button.cancel {
+            background-color: #6c757d;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.cancel:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+<!--<header class="header">
+    <div class="nav-container">
+        <nav>
+            <ul>
+                <li><a th:href="@{/displayProducts(custId=${custId})}">Home & Products</a></li>
+                <li><a th:href="@{/viewWishlist(custId=${custId})}">Wishlist</a></li>
+                <li><a th:href="@{/viewCart(custId=${custId})}">Cart</a></li>
+                <li><a th:href="@{/viewAllOrders(custId=${custId})}">View Orders</a></li>
+            </ul>
+        </nav>
+    </div>
+    <a href="#" class="button logout-btn">Logout</a>
+</header>-->
+
+<div class="container">
+    <h2>Edit Your Address</h2>
+
+    <form th:action="@{/updateAddress/{addId}(addId=${address.addId})}" method="post">
+        <input type="hidden" name="custId" th:value="${custId}"/>
+        <!-- Address Line -->
+        <div class="form-group">
+            <label for="addLine">Address Line</label>
+            <input type="text" id="addId" name="addId" th:value="${address.addId}" readonly/>
+        </div>
+        <div class="form-group">
+            <label for="addLine">Address Line</label>
+            <input type="text" id="addLine" name="addLine" th:value="${address.addLine}" placeholder="Enter your address line" />
+        </div>
+        <!-- City -->
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" th:value="${address.city}" placeholder="Enter your city" />
+        </div>
+        <!-- Pincode -->
+        <div class="form-group">
+            <label for="pincode">Pincode</label>
+            <input type="number" id="pincode" name="pincode" th:value="${address.pincode}" placeholder="Enter your pincode" />
+        </div>
+        <!-- State -->
+        <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" th:value="${address.state}" placeholder="Enter your state" />
+        </div>
+        <!-- Country -->
+        <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" id="country" name="country" th:value="${address.country}" placeholder="Enter your country" />
+        </div>
+        <!-- Buttons -->
+        <div class="form-group">
+            <button type="submit" class="button">Update Address</button>
+            <a th:href="@{/customerProfile/{custId}(custId=${custId})}" class="button cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Management</title>
+    <link rel="stylesheet" th:href="@{/cateManagement.css}">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border: none; /* Remove default border */
+        }
+
+        .button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .button:active {
+            background-color: #004085; /* Even darker blue on click */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a shadow effect on click */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Admin Dashboard - Product Management</h1>
+
+<main>
+    <section class="product-management">
+        <h2>Manage Products</h2>
+        <div class="button-group">
+            <a th:href="@{/addProduct}" class="button">Add Product</a>
+            <a th:href="@{/viewProducts}" class="button">View All Products</a>
+            <a href="#" class="button" id="viewOneProductBtn">View One Product</a>
+        </div>
+    </section>
+    <div class="home-link-container">
+        <a class="button" th:href="@{/adminHome}">Back to Dashboard</a>
+    </div>
+</main>
+
+<!-- Modal for entering Product ID -->
+<div id="productIdModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Enter Product ID</h2>
+        <form id="productIdForm">
+            <input type="number" id="prodIdInput" name="prodId" required /><br>
+            <button type="submit" class="button">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const modal = document.getElementById('productIdModal');
+        const closeBtn = document.querySelector('.close');
+        const viewOneProductBtn = document.getElementById('viewOneProductBtn');
+        const form = document.getElementById('productIdForm');
+
+        // Open modal on button click
+        viewOneProductBtn.onclick = function() {
+            modal.style.display = 'block';
+        };
+
+        // Close modal when clicking on the <span> (x)
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        // Close modal when clicking anywhere outside the modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Handle form submission
+        form.onsubmit = function(event) {
+            event.preventDefault(); // Prevent default form submission
+            const prodId = document.getElementById('prodIdInput').value;
+            if (prodId) {
+                // Redirect to the viewOneProduct API endpoint
+                window.location.href = `/viewOneProduct/${prodId}`;
+            }
+        };
+    });
+</script>
+
+</body>
+</html>

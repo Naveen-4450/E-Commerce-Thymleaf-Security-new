@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Category</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .edit-category {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            margin: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        a {
+            display: inline-block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 4px;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+        a:visited {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Edit Category</h1>
+
+<main>
+    <section class="edit-category">
+        <h2>Edit Category Details</h2>
+        <form th:action="@{/updateCategory/{id}(id=${category.categoryId})}" method="post">
+            <fieldset>
+                <legend>Edit Category</legend>
+                <label for="categoryId">Category ID:</label>
+                <input type="text" id="categoryId" name="id" th:value="${category.categoryId}" readonly>
+
+                <label for="categoryName">Category Name:</label>
+                <input type="text" id="categoryName" name="categoryName" th:value="${category.categoryName}" required>
+                <br>
+                <button type="submit">Save Changes</button>
+                <a href="#" th:href="@{/viewCategories}">Cancel</a>
+            </fieldset>
+        </form>
+    </section>
+</main>
+<!--
+<footer>
+    <p>&copy; 2024 E-Commerce Platform</p>
+</footer>-->
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Category</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .edit-category-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+        form {
+            margin: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        button, a {
+            padding: 10px 15px;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button {
+            background-color: #4CAF50;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        a {
+            text-decoration: none;
+            background-color: #007bff;
+            text-align: center;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+        a:visited {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="edit-category-container">
+    <h1>Edit Category</h1>
+    <h2>Edit Category Details</h2>
+    <form th:action="@{/updateCategory/{id}(id=${category.categoryId})}" method="post">
+        <fieldset>
+            <legend>Edit Category</legend>
+            <label for="categoryId">Category ID:</label>
+            <input type="text" id="categoryId" name="id" th:value="${category.categoryId}" readonly>
+
+            <label for="categoryName">Category Name:</label>
+            <input type="text" id="categoryName" name="categoryName" th:value="${category.categoryName}" required>
+
+            <div class="button-container">
+                <button type="submit">Save Changes</button>
+                <a href="#" th:href="@{/viewCategories}">Cancel</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+</body>
+</html>-->

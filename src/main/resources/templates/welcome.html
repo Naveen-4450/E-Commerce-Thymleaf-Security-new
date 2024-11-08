@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcome Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            width: 70%; /* Increased width of the container */
+            max-width: 700px; /* Optional: Max width for larger screens */
+            height: 50%; /* Increased height of the container */
+            padding: 40px; /* Increased padding */
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.45);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center the buttons vertically */
+        }
+
+        .button {
+            width: 60%; /* Adjusted width of the buttons */
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            margin: 10px auto; /* Center the buttons horizontally */
+            transition: background-color 0.3s ease;
+        }
+
+        .admin-button {
+            background-color: #4CAF50; /* Green */
+        }
+
+        .admin-button:hover {
+            background-color: #45a049; /* Darker green */
+        }
+
+        .customer-button {
+            background-color: #2196F3; /* Blue */
+        }
+
+        .customer-button:hover {
+            background-color: #0b79d0; /* Darker blue */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 align="center" style="color:blue">** Welcome to the E-Commerce Platform **</h2>
+    <a th:href="@{/adminWelcome}" class="button admin-button">Admin Dashboard</a>
+    <a th:href="@{/customerWelcome}" class="button customer-button">Customer Dashboard</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Category Management</title>
+    <link rel="stylesheet" th:href="@{/cateManagement.css}">
+</head>
+<body>
+
+<h1>Admin Dashboard - Category Management</h1>
+
+<main>
+    <section class="category-management">
+        <h2>Manage Categories</h2>
+        <div class="button-group">
+            <a th:href="@{/addCategory}" class="button">Add Category</a>
+         <!--   <a th:href="@{/}" class="button">View Category</a>-->
+            <a th:href="@{/viewCategories}" class="button">View All Categories</a>
+        </div>
+    </section>
+    </section>
+    <div class="home-link-container">
+        <a class="button" th:href="@{/adminHome}">Back to Dashboard</a>
+    </div>
+</main>
+
+<!--<footer>
+    <p>&copy; 2024 E-Commerce Platform</p>
+</footer>-->
+
+</body>
+</html>

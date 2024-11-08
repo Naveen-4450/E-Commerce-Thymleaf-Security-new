@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Categories</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+        .actions a {
+            display: inline-block;
+            padding: 8px 12px;
+            margin-right: 10px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .actions a:hover {
+            background-color: #0056b3;
+        }
+        .actions a:active {
+            background-color: #004494;
+        }
+
+        .home-link-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .home-link {
+            width: auto;
+        }
+
+        .back-button {
+            display: block;
+            width: 100px;
+            padding: 10px 20px;
+            margin: 10px 0;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
+
+
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            text-align:center;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+            font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+            font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>Admin Dashboard - All Categories</h1>
+
+<main>
+    <section class="category-management">
+        <h2>Existing Categories</h2>
+        <table id="category-table">
+            <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="category : ${categories}">
+                <td th:text="${category.categoryId}"></td>
+                <td th:text="${category.categoryName}"></td>
+                <td class="actions">
+                    <a th:href="@{/updateCategory/{id}(id=${category.categoryId})}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="home-link-container">
+            <a class="back-button" th:href="@{/categoryManagement}"> Back </a>
+        </div>
+
+    </section>
+</main>
+
+<!-- Modal for displaying messages -->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal display and closing -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        // Get the modal elements
+        const modal = document.getElementById('statusModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Display the modal with the message if status and msg parameters are present
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            modal.style.display = 'block';
+        }
+
+        // Get the <span> element that closes the modal
+        const span = document.querySelector('.close');
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Categories</title>
+
+</head>
+<body>
+
+<h1>Admin Dashboard - All Categories</h1>
+&lt;!&ndash;
+
+<nav>
+    <a th:href="@{/category/getAll}">Show All Categories</a> |
+    <a th:href="@{/category/add}">Add Category</a>
+</nav>
+&ndash;&gt;
+
+<main>
+    <section class="category-management">
+        <h2>Existing Categories</h2>
+        <table id="category-table">
+            <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            &lt;!&ndash; Dynamic category data &ndash;&gt;
+            <tr th:each="category : ${categories}">
+                <td th:text="${category.categoryId}"></td>
+                <td th:text="${category.categoryName}"></td>
+                <td>
+                    <a th:href="@{/update/{id}(id=${category.categoryId})}" th:onclick="'editCategory(' + ${category.categoryId} + ', \'' + ${category.categoryName} + '\')'">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        &lt;!&ndash; Edit Category Form (hidden by default) &ndash;&gt;
+        <div id="edit-category-form-container" style="display: none;">
+            <form id="edit-category-form" th:action="@{/update/{id}(id=${editCategory.id})}" method="post">
+                <fieldset>
+                    <legend>Edit Category</legend>
+                    <input type="hidden" id="edit-category-id" name="categoryId">
+                    <label for="edit-category-name">Category Name:</label>
+                    <input type="text" id="edit-category-name" name="categoryName" required>
+                    <button type="submit">Save Changes</button>
+                    <button type="button" onclick="hideEditForm()">Cancel</button>
+                </fieldset>
+            </form>
+        </div>
+    </section>
+</main>
+
+<script>
+    function editCategory(id, name) {
+        document.getElementById('edit-category-id').value = id;
+        document.getElementById('edit-category-name').value = name;
+        document.getElementById('edit-category-form-container').style.display = 'block';
+    }
+
+    function hideEditForm() {
+        document.getElementById('edit-category-form-container').style.display = 'none';
+    }
+</script>
+
+
+<footer>
+    <p>&copy; 2024 E-Commerce Platform</p>
+</footer>
+
+
+</body>
+</html>
+-->
+
+<!--<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Categories</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .actions a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .actions a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Admin Dashboard - All Categories</h1>
+
+<main>
+    <section class="category-management">
+        <h2>Existing Categories</h2>
+        <table id="category-table">
+            <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="category : ${categories}">
+                <td th:text="${category.categoryId}"></td>
+                <td th:text="${category.categoryName}"></td>
+                <td class="actions">
+                    <a th:href="@{/updateCategory/{id}(id=${category.categoryId})}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2024 E-Commerce Platform</p>
+</footer>
+
+</body>
+</html>-->

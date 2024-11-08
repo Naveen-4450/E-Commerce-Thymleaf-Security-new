@@ -1,0 +1,355 @@
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order</title>
+    <link rel="stylesheet" th:href="@{/orderStyles.css}">
+    <style>
+        /* Add your CSS styles here */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .order-summary {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/home}">Home</a></li>
+            <li><a th:href="@{/products}">Products</a></li>
+            <li><a th:href="@{/cart}">Cart</a></li>
+            <li><a th:href="@{/profile}">Profile</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Place Your Order</h1>
+        <form th:action="@{/placeOrder}" method="post">
+            <div class="form-group">
+                <label for="customerName">Customer Name:</label>
+                <input type="text" id="customerName" name="customerName" th:value="${customer.userName}" required>
+            </div>
+            <div class="form-group">
+                <label for="customerEmail">Email:</label>
+                <input type="email" id="customerEmail" name="customerEmail" th:value="${customer.email}" required>
+            </div>
+            <div class="form-group">
+                <label for="customerPhone">Phone:</label>
+                <input type="text" id="customerPhone" name="mobile" th:value="${customer.mobile}" required>
+            </div>
+            <div class="form-group">
+                <label for="shippingAddress">Shipping Address:</label>
+                <textarea id="shippingAddress" name="shippingAddress" rows="4" required th:text="${}"></textarea>
+            </div>
+           &lt;!&ndash; <div class="form-group">
+                <label for="deliveryMethod">Delivery Method:</label>
+                <select id="deliveryMethod" name="deliveryMethod" required>
+                    <option value="standard" th:selected="${orderDto.deliveryMethod == 'standard'}">Standard Delivery</option>
+                    <option value="express" th:selected="${orderDto.deliveryMethod == 'express'}">Express Delivery</option>
+                </select>
+            </div>&ndash;&gt;
+
+            <h2 class="order-summary">Order Summary</h2>
+            <div class="order-summary">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                   &lt;!&ndash; <tr th:each="item : ${orderDto.orderItems}">
+                        <td th:text="${item.productName}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="'₹' + ${item.price}"></td>
+                        <td th:text="'₹' + ${item.total}"></td>
+                    </tr>&ndash;&gt;
+                    </tbody>
+                </table>
+                <div>
+                    <p><strong>Total Amount:</strong> <span th:text="'₹' + ${}"></span></p>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button type="submit">Place Order</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;!&ndash;
+
+<html>
+<head>
+    <title>Place Order</title>
+    <link rel="stylesheet" href="orderStyles.css">
+</head>
+<body>
+<h1> hello</h1>
+</body>
+</html>&ndash;&gt;
+-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order</title>
+    <link rel="stylesheet" th:href="@{/orderStyles.css}">
+    <style>
+        /* Add your CSS styles here */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<main>
+    <div class="container">
+        <h1>Place Your Order</h1>
+        <form th:action="@{/placeOrder}" th:object="${ordersDto}" method="post">
+            <input type="hidden" th:field="*{customerId}" th:value="${customer.custId}"/>
+            <input type="hidden" th:field="*{orderItems[0].productId}" th:value="${product.prodId}"/>
+
+            <div class="form-group">
+                <label for="customerName">Customer Name:</label>
+                <input type="text" id="customerName" th:value="${customer.lastName}" readonly/>
+            </div>
+            <div class="form-group">
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" th:value="${product.prodName}" readonly/>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" th:field="*{orderItems[0].quantity}" min="1" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="custAddId">Shipping Address:</label>
+                <select id="custAddId" th:field="*{custAddId}" required>
+                    <option th:each="address : ${addresses}" th:value="${address.id}" th:text="${address.fullAddress}"></option>
+                </select>
+            </div>
+
+            <!--<div class="form-group">
+                <label for="paymentType">Payment Type:</label>
+                <select id="paymentType" th:field="*{payment.paymentType}" required>
+                    <option value="CREDIT_CARD">Credit Card</option>
+                    <option value="DEBIT_CARD">Debit Card</option>
+                    <option value="NET_BANKING">Net Banking</option>
+                    <option value="COD">Cash on Delivery</option>
+                </select>
+            </div>-->
+
+            <div class="button-container">
+                <button type="submit">Confirm Order</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>
+
+
+
+
+
+NOW IT IS  use full in place order
+
+<script>
+    function calculateTotal() {
+        const price = parseFloat(document.getElementById("price").textContent);
+        const discountPercentage = parseFloat(document.getElementById("discountPercentage").textContent);
+        const quantity = parseInt(document.getElementById("quantity").value);
+
+        const subTotal = price * quantity;
+        const discount = (subTotal * discountPercentage) / 100;
+        const totalAmount = subTotal - discount;
+
+        document.getElementById("subTotal").textContent = subTotal.toFixed(2);
+        document.getElementById("discount").textContent = discount.toFixed(2);
+        document.getElementById("totalAmount").textContent = totalAmount.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateTotal();  // Initial calculation
+        document.getElementById('quantity').addEventListener('input', calculateTotal);
+
+        // Handle status message from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        if (status && msg) {
+            const statusModal = document.getElementById('statusModal');
+            const modalMessage = document.getElementById('modalMessage');
+
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            statusModal.style.display = 'block';
+        }
+
+        // Add Address Modal
+        const addAddressBtn = document.getElementById('addAddressBtn');
+        const addAddressModal = document.getElementById('addAddressModal');
+        const closeBtns = document.querySelectorAll('.modal .close');
+
+        // Open the Add Address modal
+        addAddressBtn.onclick = function() {
+            addAddressModal.style.display = 'block';
+        };
+
+            // Close modals when close button is clicked
+        closeBtns.forEach(function(btn) {
+            btn.onclick = function() {
+                this.closest('.modal').style.display = 'none';
+            };
+        });
+
+        // Close modals when clicking outside the modal content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+
+        // Handle Edit Address Modal
+
+       const editAddressBtns = document.querySelectorAll('.edit-address-btn');
+        const editAddressModal = document.getElementById('editAddressModal');
+        const editAddressForm = document.getElementById('editAddressForm');
+
+        editAddressBtns.forEach(function(btn) {
+            btn.onclick = function() {
+                const addId = this.getAttribute('data-address-id');
+                const addLine = this.getAttribute('data-add-line');
+                const city = this.getAttribute('data-city');
+                const pincode = this.getAttribute('data-pincode');
+                const state = this.getAttribute('data-state');
+                const country = this.getAttribute('data-country');
+
+                console.log('addId:', addId);  // Debugging
+                console.log('addLine:', addLine);  // Debugging
+                console.log('city:', city);  // Debugging
+                console.log('pincode:', pincode);  // Debugging
+                console.log('state:', state);  // Debugging
+                console.log('country:', country);  // Debugging
+
+                document.getElementById('editAddId').value = addId;
+                document.getElementById('editAddLine').value = addLine;
+                document.getElementById('editCity').value = city;
+                document.getElementById('editPincode').value = pincode;
+                document.getElementById('editState').value = state;
+                document.getElementById('editCountry').value = country;
+
+                editAddressModal.style.display = 'block';
+            };
+        });
+    });
+</script>
+
+
+

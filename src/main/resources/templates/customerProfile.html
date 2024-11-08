@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Profile</title>
+    <link rel="stylesheet" th:href="@{/customerProfileStyles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            height:50px;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .nav-container ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+            padding: 0;
+            margin: 0;
+        }
+        .nav-container ul li {
+            display: inline;
+        }
+        .nav-container ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+        }
+        .header .logout-btn {
+            color: #fff;
+            background-color: #dc3545;
+            text-decoration: none;
+            padding: 10px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+
+           margin-left: 50px;
+        }
+        .header .logout-btn:hover {
+            background-color: #c82333;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 70px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            font-size: 28px;
+            color: #333;
+            border-bottom: 2px solid #e1e1e1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-size: 22px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+            margin: 8px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button.add {
+            background-color: #28a745;
+        }
+        .button.edit {
+            background-color: #ffc107;
+        }
+        .button.delete {
+            background-color: #dc3545;
+        }
+        .button.update {
+            background-color: #007bff;
+        }
+
+        /* Table Structure */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: none; /* No borders around cells */
+    padding: 10px;
+    text-align: center;
+}
+
+/* Alternating Cell Colors */
+td:nth-child(odd) {
+    background-color: #f2f2f2; /* Light gray for odd cells */
+}
+
+td:nth-child(even) {
+    background-color: #e6e6ff; /* Light purple for even cells */
+}
+
+/* For Header */
+th {
+    background-color: #ccccff; /* Light purple */
+    color: #333;
+}
+
+/* No Borders but Visible Structure */
+table tr:not(:first-child) td {
+    border-top: 1px solid transparent; /* Transparent top border for rows (optional) */
+}
+
+
+
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            text-align:center;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+	        font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+	    font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="nav-container">
+        <nav>
+            <ul>
+                <li><a th:href="@{/displayProducts?(custId=${custId})}">Home&Products</a></li>
+                <li><a th:href="@{/viewWishlist?(custId=${custId})}">Wishlist</a></li>
+                <li><a th:href="@{/viewCart?(custId=${custId})}">Cart</a></li>
+                <li><a th:href="@{/viewAllOrders/{custId}(custId=${custId})}">View Orders</a></li>
+                <li><a th:href="@{/logout}" >Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+<!--    <a href="#" class="logout-btn">Logout</a>-->
+</header>
+
+<div class="container">
+    <h2>Customer Profile</h2>
+
+    <!-- Customer Details -->
+    <div class="section">
+        <h3>Personal Information</h3>
+        <p>Customer ID : <span th:text="${customer.custId}"></span></p>
+        <p>First Name : <span th:text="${customer.firstName}"></span></p>
+        <p>Last Name : <span th:text="${customer.lastName}"></span></p>
+        <p>Username : <span th:text="${customer.username}"></span></p>
+<!--        <p>Email: <span th:text="${customer.email}"></span></p>
+            <p>Mobile: <span th:text="${customer.mobile}"></span></p>
+-->
+        <p>Email : <a th:href="'mailto:' + ${customer.email}" th:text="${customer.email}"></a></p>
+        <p>Mobile : <a href="tel:[[${customer.mobile}]]">[[${customer.mobile}]]</a></p>
+
+       <!-- <p>Created At: <span th:text="${#dates.format(customer.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <p>Updated At: <span th:text="${#dates.format(customer.UpdatedAt, 'yyyy-MM-dd HH:mm')}"></span></p>-->
+        <a th:href="@{/updateCustomer/{custId}(custId=${customer.custId})}" class="button update">Update Details</a>
+    </div>
+
+    <!-- Addresses -->
+    <div class="section">
+        <h3><u>Addresses:</u></h3>
+        <table >
+            <thead>
+            <tr>
+                <th>Address Line</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Pincode</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="address : ${customer.customerAddresses}">
+                <td th:text="${address.addLine}"></td>
+                <td th:text="${address.city}"></td>
+                <td th:text="${address.state}"></td>
+                <td th:text="${address.pincode}"></td>
+                <td>
+                    <a th:href="@{/updateAddress/{addId}(addId=${address.addId})}" class="button edit">Edit</a>
+                </td>
+                <td>
+                    <!--below is for deleting the address-->
+                    <form th:action="@{/deleteAddress/{addId}(addId=${address.addId})}" method="post">
+                        <input type="hidden" name="custId" th:value="${customer.custId}" />
+                        <button type="submit" class="button delete">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/addingAddress/{custId}(custId=${customer.custId})}" class="button add">Add Address</a>
+    </div>
+</div>
+
+
+<!-- Modal for displaying messages -->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal display and closing -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        // Get the modal elements
+        const modal = document.getElementById('statusModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Display the modal with the message if status and msg parameters are present
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            modal.style.display = 'block';
+        }
+
+        // Get the <span> element that closes the modal
+        const span = document.querySelector('.close');
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Profile</title>
+    <link rel="stylesheet" th:href="@{/customerProfileStyles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        .header a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 70px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            font-size: 28px;
+            color: #333;
+            border-bottom: 2px solid #e1e1e1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-size: 22px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+            margin: 8px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    position: relative;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button.add {
+            background-color: #28a745;
+        }
+        .button.edit {
+            background-color: #ffc107;
+        }
+        .button.delete {
+            background-color: #dc3545;
+        }
+        .button.update {
+            background-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/displayProducts?(custId=${custId})}">Home&Products</a></li>
+            <li><a th:href="@{/viewWishlist?(custId=${custId})}">Wishlist</a></li>
+            <li><a th:href="@{/viewCart?(custId=${custId})}">Cart</a></li>
+            <li><a th:href="@{/viewAllOrders/{custId}(custId=${custId})}">view-Orders</a></li> &lt;!&ndash; For Path Variable&ndash;&gt;
+
+            <li><a href="#" class="logout-btn">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>Customer Profile</h2>
+
+    &lt;!&ndash; Customer Details &ndash;&gt;
+    <div class="section">
+        <h3>Personal Information</h3>
+        <p>Customer ID: <span th:text="${customer.custId}"></span></p>
+        <p>First Name: <span th:text="${customer.firstName}"></span></p>
+        <p>Last Name: <span th:text="${customer.lastName}"></span></p>
+        <p>Username: <span th:text="${customer.userName}"></span></p>
+        <p>Email: <span th:text="${customer.email}"></span></p>
+        <p>Mobile: <span th:text="${customer.mobile}"></span></p>
+        <p>Created At: <span th:text="${#dates.format(customer.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <p>Updated At: <span th:text="${#dates.format(customer.UpdatedAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <a href="#" class="button update">Update Details</a>
+    </div>
+
+    &lt;!&ndash; Addresses &ndash;&gt;
+    <div class="section">
+        <h3>Addresses</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Address Line</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Pincode</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="address : ${customer.customerAddresses}">
+                <td th:text="${address.addLine}"></td>
+                <td th:text="${address.city}"></td>
+                <td th:text="${address.state}"></td>
+                <td th:text="${address.pincode}"></td>
+                <td>
+                    <a href="#" class="button edit">Edit</a>
+                    <a href="#" class="button delete">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="#" class="button add">Add Address</a>
+    </div>
+</div>
+</body>
+</html>
+-->

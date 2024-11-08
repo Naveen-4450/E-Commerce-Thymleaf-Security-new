@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .order-details {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .order-summary {
+            margin-bottom: 20px;
+        }
+
+        .order-summary h2 {
+            color: #4CAF50;
+        }
+
+        .order-summary p {
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+
+        .order-items {
+            margin-top: 30px;
+        }
+
+        .order-items table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .order-items th, .order-items td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .order-items th {
+            background-color: #f4f4f4;
+        }
+
+        .order-items td {
+            background-color: #fdfdfd;
+        }
+
+        .order-items img {
+            max-width: 50px;
+            max-height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .return-button {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-button:hover {
+            background-color: #0056b3;
+        }
+
+
+        .address-input {
+            width: 60%;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            background-color: transparent;
+        }
+
+        .address-input:focus {
+            outline: none;
+            border-bottom: 1px solid #000;
+        }
+
+        .address-input::placeholder {
+        color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Order Details</h1>
+
+<div class="order-details">
+    <div class="order-summary">
+        <h2>Order Summary</h2>
+        <p><strong>Order ID:</strong> <span th:text="${orderDetails.orderId}"></span></p>
+        <p><strong>Order Date:</strong> <span th:text="${#dates.format(orderDetails.OrderedDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <p><strong>Status:</strong> <span th:text="${orderDetails.status}"></span></p>
+        <p><strong>Total Amount:</strong> ₹<span th:text="${orderDetails.totalAmount}"></span></p>
+        <p><strong>Payment Method:</strong> <span th:text="${orderDetails.paymentMethod}"></span></p>
+        <p><strong>Payment Status:</strong> <span th:text="${orderDetails.PaymentStatus}"></span></p>
+        <p><strong>Customer ID:</strong> <span th:text="${orderDetails.customerId}"></span></p>
+
+        <p>
+            <strong>Address Details:</strong>
+                <div>
+                    <input type="text" th:value="${address.addLine}" readonly class="address-input" placeholder="Address Line"/>
+                    <input type="text" th:value="${address.city}" readonly class="address-input" placeholder="City"/>
+                    <input type="text" th:value="${address.pincode}" readonly class="address-input" placeholder="Pincode"/>
+                    <input type="text" th:value="${address.state}" readonly class="address-input" placeholder="State"/>
+                    <input type="text" th:value="${address.country}" readonly class="address-input" placeholder="Country"/>
+                </div>
+        </p>
+
+
+    </div>
+
+    <div class="order-items">
+        <h2>Order Items</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Product Image</th>
+                <th>Product Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Item Price</th>
+                <th>Final Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${orderDetails.orderItems}">
+                <td>
+                    <img th:src="${item.product.prodImages.get(0)}" alt="Product Image"/>
+                </td>
+                <td th:text="${item.product.prodName}"></td>
+                <td th:text="${item.product.description}"></td>
+                <td>₹<span th:text="${item.product.price}"></span></td>
+                <td th:text="${item.quantity}"></td>
+                <td>₹<span th:text="${item.itemsPrice}"></span></td>
+                <td>₹<span th:text="${item.finalAmount}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a th:href="@{/viewAllOrders/{custId}(custId=${orderDetails.customerId})}" class="return-button">Back to Orders</a>
+</div>
+
+</body>
+</html>

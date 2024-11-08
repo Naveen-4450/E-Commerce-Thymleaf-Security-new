@@ -1,0 +1,266 @@
+
+<!--
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Orders</title>
+    <link rel="stylesheet" th:href="@{/customerAllOrderStyles.css}">
+
+</head>
+<body>
+<h1>Orders for Customer ID: <span th:text="${custId}"></span></h1>
+
+<div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Product Name</th>
+            <th>Product (Actual Price)</th>
+            <th>Quantity</th>
+            <th>Items Price (qty.)</th>
+            <th>Total Amount</th>
+            <th>Payment Method</th>
+            <th>Payment Status</th>
+            <th>Status</th>
+            <th>Ordered Date</th>
+            <th>Update Status</th>
+        </tr>
+        </thead>
+        <tbody>  &lt;!&ndash;font-weight: bold;&ndash;&gt;
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.orderId}" th:with="s=${order.status.toString()}"></td>
+            <td th:each="item : ${order.orderItems}" th:text="${item.product.prodName}"></td>
+            <td th:each="item : ${order.orderItems}" th:text="${item.product.price}"></td>
+            <td th:each="item : ${order.orderItems}" th:text="${item.quantity}"></td>
+            <td th:each="item : ${order.orderItems}" th:text="${item.itemsPrice}"></td>
+            <td th:text="${order.totalAmount}"></td>
+            <td th:text="${order.paymentMethod}"></td>
+            <td th:text="${order.PaymentStatus}"></td>
+
+            <td th:style="${s=='DELIVERED' ? 'color:green' :
+                            (s=='CANCELLED' ? 'color:red'  :
+                            (s=='SHIPPED' ? 'color:blue'  :
+                                             'color:black'))}"
+                    th:text="${order.status}" th:class="order-status-row"></td>
+
+            <td th:text="${#dates.format(order.OrderedDate, 'yyyy-MM-dd')}"></td>
+            <td class="actions">
+                <a class="update" th:href="@{/orderStatus/{orderId}(orderId=${order.orderId})}">Update Status</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${orders == null}">
+    <p>No orders found for this customer.</p>
+</div>
+
+<div class="home-link-container">
+    <a class="button" th:href="@{/adminHome}">Back to Dashboard</a>
+</div>
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Orders</title>
+    <link rel="stylesheet" th:href="@{/customerAllOrderStyles.css}">
+    <!--<script>
+        function updateOrderStatus(orderId) {
+            const status = document.getElementById('status-' + orderId).value;
+            const url = '/orderStatus/' + orderId + '?status=' + status;
+
+            fetch(url, {
+                method: 'PUT'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Order status updated successfully!');
+                    window.location.reload(); // Reload page to reflect the updated status
+                } else {
+                    alert('Failed to update order status: ' + response.statusText);
+                }
+            }).catch(error => {
+                console.error('Error updating order status:', error);
+                alert('An error occurred while updating the order status.');
+            });
+        }
+    </script>-->
+
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+	        font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+	        font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+    </style>
+
+</head>
+<body>
+<h1>Orders for Customer ID: <span th:text="${custId}"></span></h1>
+
+<div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Product Name</th>
+            <th>Product (Actual Price)</th>
+            <th>Quantity</th>
+            <th>Items Price (qty.)</th>
+            <th>Total Amount</th>
+            <th>Payment Method</th>
+            <th>Payment Status</th>
+            <th>Status</th>
+            <th>Ordered Date</th>
+            <th>Update Status</th>
+        </tr>
+        </thead>
+        <tbody th:if="${orders != null}">
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.orderId}"></td>
+            <td th:each="item : ${order.orderItems}" th:text="${item.product.prodName}"></td>
+            <td th:each="item : ${order.orderItems}" th:text="${item.product.price}"></td>
+            <td th:each="item : ${order.orderItems}" th:text="${item.quantity}"></td>
+            <td th:each="item : ${order.orderItems}" th:text="${item.itemsPrice}"></td>
+            <td th:text="${order.totalAmount}"></td>
+            <td th:text="${order.paymentMethod}"></td>
+            <td th:text="${order.PaymentStatus}"></td>
+
+            <td th:style="${order.status.toString() == 'DELIVERED' ? 'color:green' :
+                            (order.status.toString() == 'CANCELLED' ? 'color:red'  :
+                            (order.status.toString() == 'SHIPPED' ? 'color:blue'  :
+                                             'color:black'))}"
+                th:text="${order.status}" class="order-status-row"></td>
+
+            <td th:text="${#dates.format(order.OrderedDate, 'yyyy-MM-dd')}"></td>
+
+            <td class="actions">
+                <form th:action="@{/orderStatus/{orderId}(orderId=${order.orderId})}" method="post">
+                    <input type="hidden" name="_method" value="put" />
+                    <input type="hidden" name="custId" th:value="${custId}" />
+                    <select name="status" class="dropdown-box">
+                        <option value="ORDERED" th:selected="${order.status == 'ORDERED'}">Ordered</option>
+                        <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}">Shipped</option>
+                        <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">Delivered</option>
+                        <option value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">Cancelled</option>
+                    </select>
+                    <button type="submit" class="update">Update Status</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+    <div th:if="${orders == null}">
+        <p align="center" style="color:red; font-weight:bold; font-size:20px;">Orders list is empty for this Customer : <span th:text="${custId}"></span></p>
+    </div> <br>
+
+    <div class="home-link-container">
+        <a class="button" th:href="@{/ordersManagement}">Back to OrderManagement</a>
+    </div>
+
+<!-- Modal for displaying messages -->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal display and closing -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        // Get the modal elements
+        const modal = document.getElementById('statusModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Display the modal with the message if status and msg parameters are present
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            modal.style.display = 'block';
+        }
+
+        // Get the <span> element that closes the modal
+        const span = document.querySelector('.close');
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+

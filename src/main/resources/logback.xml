@@ -1,0 +1,64 @@
+<configuration status="INFO">
+    <!-- Define the file appender with time-based rolling policy -->
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/ECommerce.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/LogInfo-%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} ---[%level]--- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} ---[%level]--- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Define the root logger -->
+    <root level="info">
+        <appender-ref ref="ROLLING"/>
+        <appender-ref ref="Console"/>
+    </root>
+</configuration>
+
+
+
+
+
+<!--
+        <configuration status="INFO">
+            &lt;!&ndash; Define the file appender with time-based rolling policy &ndash;&gt;
+            <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+                &lt;!&ndash; The main log file &ndash;&gt;
+                <file>logs/ECommerce.log</file>
+
+                &lt;!&ndash; Configure the rolling policy to roll over every minute &ndash;&gt;
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    &lt;!&ndash; Define the pattern for the rolled-over files &ndash;&gt;
+                    <fileNamePattern>logs/LogInfo-%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+                    &lt;!&ndash; Keep 5 log files, and roll over the files after reached max &ndash;&gt;
+                    <maxHistory>5</maxHistory>
+                </rollingPolicy>
+
+                &lt;!&ndash; Define the encoder with a pattern for the log format &ndash;&gt;
+                <encoder>
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss} -&#45;&#45;[%level]-&#45;&#45; %msg%n</pattern>
+                </encoder>
+            </appender>
+
+            <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder>
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss} -&#45;&#45;[%level]-&#45;&#45; %msg%n</pattern>
+                </encoder>
+            </appender>
+            &lt;!&ndash; Define the root logger &ndash;&gt;
+            <root level="info">
+                <appender-ref ref="ROLLING"/>
+                <appender-ref ref="Console"/>
+            </root>
+        </configuration>
+        -->

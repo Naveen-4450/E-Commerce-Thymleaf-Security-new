@@ -1,0 +1,98 @@
+/* styles.css */
+
+/* Apply some basic styling to the body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Style the heading */
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+/* Style the form container */
+form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Container for form fields */
+.field-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Style form fields */
+.field-container > div {
+    flex: 1 1 calc(50% - 20px);
+    margin-bottom: 15px;
+}
+
+/* Ensure form elements take full width */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Style labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Style submit button */
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.back-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #4CAF50; /* Green background */
+          color: white; /* White text */
+          text-decoration: none;
+          border-radius: 5px;
+          font-size: 16px;
+          font-weight: bold;
+          transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+          background-color: #45a049; /* Darker green on hover */
+        }
+
+        .back-button:active {
+          background-color: #388e3c; /* Even darker green on click */
+        }

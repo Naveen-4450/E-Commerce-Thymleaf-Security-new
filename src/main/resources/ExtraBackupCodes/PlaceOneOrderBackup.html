@@ -1,0 +1,981 @@
+<!--
+
+in this code add new address completed  working
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Place Order</title>
+    <link rel="stylesheet" th:href="@{/placeOrderStyles.css}">
+    <style>
+        /* General Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        /* The Close Button */
+        .modal .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal .close:hover,
+        .modal .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        .fail-msg {
+            color: red;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        /* Form styles */
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .add-address-btn {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .add-address-btn:hover {
+            background-color: #007bb5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Place Your Order</h2>
+
+    <form th:action="@{/placeOneOrder}" method="post">
+        <div class="order-section">
+            <h3>Customer Details</h3>
+            <input type="hidden" name="customerId" th:value="${customer.custId}">
+            <input type="hidden" name="productId" th:value="${product.prodId}">
+            <p>Name: <span th:text="${customer.lastName}"></span></p>
+            <p>Email: <a th:href="'mailto:' + ${customer.email}" th:text="${customer.email}"></a></p>
+&lt;!&ndash;            <p>Mobile : <span th:text="${customer.mobile}"></span></p>
+           <p>Mobile : <a href="'tel:' ${customer.mobile}" th:text="${customer.mobile}"></a></p>&ndash;&gt;
+            <p>Mobile: <a href="tel:[[${customer.mobile}]]">[[${customer.mobile}]]</a></p>
+
+
+        </div>
+
+        <div class="order-section">
+            <h3>Shipping Address</h3>
+            <div class="form-group">
+                <select name="custAddId" required>
+                    <option value="">&#45;&#45;&#45;&#45;Select your address&#45;&#45;&#45;&#45;</option>
+                    <option th:each="address : ${addresses}"
+                            th:value="${address.addId}"
+                            th:text="${address.addLine} + ', ' + ${address.city} + ', ' + ${address.state} + ', ' + ${address.pincode}"></option>
+                </select>
+            </div>
+            &lt;!&ndash; Add New Address Button &ndash;&gt;
+            <button type="button" class="add-address-btn" id="addAddressBtn">Add New Address</button>
+        </div>
+
+        <div class="order-section">
+            <h3>Product Details</h3>
+            <p>Product Name: <span th:text="${product.prodName}"></span></p>
+            <p>Price: ₹<span id="price" th:text="${product.price}"></span></p>
+            <p>Discount: <span id="discountPercentage" th:text="${product.discount}"></span>%</p>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1"/>
+            </div>
+        </div>
+
+        <div class="order-section">
+            <h3>Total Amount</h3>
+            <p>Items Total: ₹<span id="subTotal"></span></p>
+            <p>Discount: ₹<span id="discount"></span></p>
+            <p>Order Total: ₹<span id="totalAmount"></span></p>
+        </div>
+
+        <div class="order-section">
+            <h3>Payment Method</h3>
+            <div class="form-group">
+                <select name="paymentMethod" required>
+                    <option value="" selected>Select the Payment Type</option>
+                    <option value="CREDIT_CARD">Credit Card</option>
+                    <option value="DEBIT_CARD">Debit Card</option>
+                    <option value="NET_BANKING">Net Banking</option>
+                    <option value="UPI">UPI</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button type="submit" class="confirm-btn">Confirm Order</button>
+            <a th:href="@{/displayProducts?(custId=${customer.custId})}" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+
+&lt;!&ndash; Add Address Modal &ndash;&gt;
+<div id="addAddressModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Add New Address</h3>
+        <form th:action="@{/addOrderAddress/{custId}(custId=${customer.custId})}" method="post">
+            <input type="hidden" name="customerId" th:value="${customer.custId}">
+            <input type="hidden" name="prodId" th:value="${product.prodId}">
+            <div class="form-group">
+                <label for="addLine">Address Line:</label>
+                <input type="text" id="addLine" name="addLine" required />
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required />
+            </div>
+            <div class="form-group">
+                <label for="pincode">Pincode:</label>
+                <input type="text" id="pincode" name="pincode" required />
+            </div>
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" required />
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" required />
+            </div>
+
+            <button type="submit" class="submit-btn">Add Address</button>
+        </form>
+    </div>
+</div>
+
+&lt;!&ndash; Modal for displaying messages &ndash;&gt;
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+<script>
+    function calculateTotal() {
+        const price = parseFloat(document.getElementById("price").textContent);
+        const discountPercentage = parseFloat(document.getElementById("discountPercentage").textContent);
+        const quantity = parseInt(document.getElementById("quantity").value);
+
+        const subTotal = price * quantity;
+        const discount = (subTotal * discountPercentage) / 100;
+        const totalAmount = subTotal - discount;
+
+        document.getElementById("subTotal").textContent = subTotal.toFixed(2);
+        document.getElementById("discount").textContent = discount.toFixed(2);
+        document.getElementById("totalAmount").textContent = totalAmount.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateTotal();  // Initial calculation
+        document.getElementById('quantity').addEventListener('input', calculateTotal);
+
+        // Handle status message from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        if (status && msg) {
+            const statusModal = document.getElementById('statusModal');
+            const modalMessage = document.getElementById('modalMessage');
+
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            statusModal.style.display = 'block';
+        }
+
+        // Add Address Modal
+        const addAddressBtn = document.getElementById('addAddressBtn');
+        const addAddressModal = document.getElementById('addAddressModal');
+        const closeBtns = document.querySelectorAll('.modal .close');
+
+        // Open the Add Address modal
+        addAddressBtn.onclick = function() {
+            addAddressModal.style.display = 'block';
+        };
+
+        // Close modals when close button is clicked
+        closeBtns.forEach(function(closeBtn) {
+            closeBtn.onclick = function() {
+                closeBtn.closest('.modal').style.display = 'none';
+            };
+        });
+
+        // Close modals when clicking outside of the modal content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+    });
+</script>
+
+</body>
+</html>
+-->
+<!--  <script>
+
+// below is for Message popup  JS
+
+       function calculateTotal() {
+           const price = parseFloat(document.getElementById("price").textContent);
+           const discountPercentage = parseFloat(document.getElementById("discountPercentage").textContent);
+           const quantity = parseInt(document.getElementById("quantity").value);
+
+           const subTotal = price * quantity;
+           const discount = (subTotal * discountPercentage) / 100;
+           const totalAmount = subTotal - discount;
+
+           document.getElementById("subTotal").textContent = subTotal.toFixed(2);
+           document.getElementById("discount").textContent = discount.toFixed(2);
+           document.getElementById("totalAmount").textContent = totalAmount.toFixed(2);
+       }
+
+       document.addEventListener('DOMContentLoaded', function() {
+           calculateTotal();  // Initial calculation
+           document.getElementById('quantity').addEventListener('input', calculateTotal);
+       });
+   </script>
+
+
+   <script>
+   // below is for Address form  popup  JS
+
+       document.addEventListener('DOMContentLoaded', function() {
+           const addAddressBtn = document.getElementById('addAddressBtn');
+           const addAddressModal = document.getElementById('addAddressModal');
+           const closeBtns = document.querySelectorAll('.modal .close');
+
+           // Open the Add Address modal
+           addAddressBtn.onclick = function() {
+               addAddressModal.style.display = 'block';
+           };
+
+           // Close modals when close button is clicked
+           closeBtns.forEach(function(closeBtn) {
+               closeBtn.onclick = function() {
+                   closeBtn.closest('.modal').style.display = 'none';
+               };
+           });
+
+           // Close modals when clicking outside of the modal content
+           window.onclick = function(event) {
+               if (event.target.classList.contains('modal')) {
+                   event.target.style.display = 'none';
+               }
+           };
+
+           // Open status modal if there is a message
+           const statusMessage = "[[${message}]]"; // Thymeleaf variable for message
+           if (statusMessage) {
+               const modalMessage = document.getElementById('modalMessage');
+               modalMessage.textContent = statusMessage;
+               modalMessage.className = "[[${messageType}]]"; // Add appropriate class (success-msg or fail-msg)
+               document.getElementById('statusModal').style.display = 'block';
+           }
+       });
+   </script>
+-->
+
+
+<!--below is code for place order with add new Address button only edit address button not there
+-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Place Order</title>
+    <link rel="stylesheet" th:href="@{/placeOrderStyles.css}">
+    <style>
+        /* General Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        /* The Close Button */
+        .modal .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal .close:hover,
+        .modal .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        .fail-msg {
+            color: red;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        /* Form styles */
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .add-address-btn {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .add-address-btn:hover {
+            background-color: #007bb5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Place Your Order</h2>
+
+    <form th:action="@{/placeOneOrder}" method="post">
+        <div class="order-section">
+            <h3>Customer Details</h3>
+            <input type="hidden" name="customerId" th:value="${customer.custId}">
+            <input type="hidden" name="productId" th:value="${product.prodId}">
+            <p>Name: <span th:text="${customer.lastName}"></span></p>
+            <p>Email: <a th:href="'mailto:' + ${customer.email}" th:text="${customer.email}"></a></p>
+            <!--            <p>Mobile : <span th:text="${customer.mobile}"></span></p>
+                       <p>Mobile : <a href="'tel:' ${customer.mobile}" th:text="${customer.mobile}"></a></p>-->
+            <p>Mobile: <a href="tel:[[${customer.mobile}]]">[[${customer.mobile}]]</a></p>
+
+
+        </div>
+
+        <div class="order-section">
+            <h3>Shipping Address</h3>
+            <div class="form-group">
+                <select id="addressSelect" name="custAddId" required>
+                    <option value="">----Select your address----</option>
+                    <th:block th:each="address : ${addresses}">
+                        <option th:value="${address.addId}"
+                                th:text="${address.addLine} + ', ' + ${address.city} + ', ' + ${address.state} + ', ' + ${address.pincode}">
+                        </option>
+                        <!-- <button type="button" class="edit-address-btn" onclick="editAddress(${address.addId})">Edit</button>
+ -->
+                    </th:block>
+                </select>
+            </div>
+            <!-- Add New Address Button -->
+            <button type="button" class="add-address-btn" id="addAddressBtn">Add New Address</button>
+        </div>
+
+        <div class="order-section">
+            <h3>Product Details</h3>
+            <p>Product Name: <span th:text="${product.prodName}"></span></p>
+            <p>Price: ₹<span id="price" th:text="${product.price}"></span></p>
+            <p>Discount: <span id="discountPercentage" th:text="${product.discount}"></span>%</p>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1"/>
+            </div>
+        </div>
+
+        <div class="order-section">
+            <h3>Total Amount</h3>
+            <p>Items Total: ₹<span id="subTotal"></span></p>
+            <p>Discount: ₹<span id="discount"></span></p>
+            <p>Order Total: ₹<span id="totalAmount"></span></p>
+        </div>
+
+        <div class="order-section">
+            <h3>Payment Method</h3>
+            <div class="form-group">
+                <select name="paymentMethod" required>
+                    <option value="" selected>Select the Payment Type</option>
+                    <option value="CREDIT_CARD">Credit Card</option>
+                    <option value="DEBIT_CARD">Debit Card</option>
+                    <option value="NET_BANKING">Net Banking</option>
+                    <option value="UPI">UPI</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button type="submit" class="confirm-btn">Confirm Order</button>
+            <a th:href="@{/displayProducts?(custId=${customer.custId})}" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Add Address Modal -->
+<div id="addAddressModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Add New Address</h3>
+        <form th:action="@{/addOrderAddress/{custId}(custId=${customer.custId})}" method="post">
+            <input type="hidden" name="customerId" th:value="${customer.custId}">
+            <input type="hidden" name="prodId" th:value="${product.prodId}">
+            <div class="form-group">
+                <label for="addLine">Address Line:</label>
+                <input type="text" id="addLine" name="addLine" required />
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required />
+            </div>
+            <div class="form-group">
+                <label for="pincode">Pincode:</label>
+                <input type="number" id="pincode" name="pincode" required />
+            </div>
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" required />
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" required />
+            </div>
+
+            <button type="submit" class="submit-btn">Add Address</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for displaying messages -->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+<script>
+    function calculateTotal() {
+        const price = parseFloat(document.getElementById("price").textContent);
+        const discountPercentage = parseFloat(document.getElementById("discountPercentage").textContent);
+        const quantity = parseInt(document.getElementById("quantity").value);
+
+        const subTotal = price * quantity;
+        const discount = (subTotal * discountPercentage) / 100;
+        const totalAmount = subTotal - discount;
+
+        document.getElementById("subTotal").textContent = subTotal.toFixed(2);
+        document.getElementById("discount").textContent = discount.toFixed(2);
+        document.getElementById("totalAmount").textContent = totalAmount.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateTotal();  // Initial calculation
+        document.getElementById('quantity').addEventListener('input', calculateTotal);
+
+        // Handle status message from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        if (status && msg) {
+            const statusModal = document.getElementById('statusModal');
+            const modalMessage = document.getElementById('modalMessage');
+
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            statusModal.style.display = 'block';
+        }
+
+        // Add Address Modal
+        const addAddressBtn = document.getElementById('addAddressBtn');
+        const addAddressModal = document.getElementById('addAddressModal');
+        const closeBtns = document.querySelectorAll('.modal .close');
+
+        // Open the Add Address modal
+        addAddressBtn.onclick = function() {
+            addAddressModal.style.display = 'block';
+        };
+
+        // Close modals when close button is clicked
+        closeBtns.forEach(function(closeBtn) {
+            closeBtn.onclick = function() {
+                closeBtn.closest('.modal').style.display = 'none';
+            };
+        });
+
+        // Close modals when clicking outside of the modal content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+    });
+</script>
+
+</body>
+</html>
+
+
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Place Order</title>
+    <link rel="stylesheet" th:href="@{/placeOrderStyles.css}">
+    <style>
+        /* General Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        /* The Close Button */
+        .modal .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal .close:hover,
+        .modal .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        .fail-msg {
+            color: red;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        /* Form styles */
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .add-address-btn {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .add-address-btn:hover {
+            background-color: #007bb5;
+        }
+
+
+
+        /* Table Structure */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: none; /* No borders around cells */
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Alternating Cell Colors */
+        td:nth-child(odd) {
+            background-color: #f2f2f2; /* Light gray for odd cells */
+        }
+
+        td:nth-child(even) {
+            background-color: #e6e6ff; /* Light purple for even cells */
+        }
+
+        /* For Header */
+        th {
+            background-color: #ccccff; /* Light purple */
+            color: #333;
+        }
+
+        /* No Borders but Visible Structure */
+        table tr:not(:first-child) td {
+            border-top: 1px solid transparent; /* Transparent top border for rows (optional) */
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Place Your Order</h2>
+
+    <form th:action="@{/placeOneOrder}" method="post">
+        <div class="order-section">
+            <h3>Customer Details</h3>
+            <input type="hidden" name="customerId" th:value="${customer.custId}">
+            <input type="hidden" name="productId" th:value="${product.prodId}">
+            <p>Name: <span th:text="${customer.lastName}"></span></p>
+            <p>Email : <a th:href="'mailto:' + ${customer.email}" th:text="${customer.email}"></a></p>
+            <p>Mobile: <a href="tel:[[${customer.mobile}]]">[[${customer.mobile}]]</a></p>
+        </div>
+
+        <div class="order-section">
+            <h3>Shipping Address</h3>
+            &lt;!&ndash;<div class="form-group">
+                <select id="addressSelect" name="custAddId" required>
+                    <option value="">&#45;&#45;&#45;&#45;Select your address&#45;&#45;&#45;&#45;</option>
+                    <th:block th:each="address : ${addresses}">
+                        <option th:value="${address.addId}"
+                                th:text="${address.addLine} + ', ' + ${address.city} + ', ' + ${address.state} + ', ' + ${address.pincode}">
+                        </option>
+                       &lt;!&ndash; <button type="button" class="edit-address-btn" onclick="editAddress(${address.addId})">Edit</button>
+&ndash;&gt;
+                    </th:block>
+                </select>
+            </div>&ndash;&gt;
+                <table >
+                    <thead>
+                    <tr>
+                        <th>Select Add.</th>
+                        <th>Address Line</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Pincode</th>
+                        <th>Edit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="address : ${addresses}">
+                        <td>
+                            <input type="radio" name="custAddId" th:value="${address.addId}">
+                        </td>
+                        <td th:text="${address.addLine}"></td>
+                        <td th:text="${address.city}"></td>
+                        <td th:text="${address.state}"></td>
+                        <td th:text="${address.pincode}"></td>
+                        <td>
+                            <a th:href="@{/updateAddress/{addId}(addId=${address.addId})}" class="button edit">Edit</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            &lt;!&ndash; Add New Address Button &ndash;&gt;
+            <button type="button" class="add-address-btn" id="addAddressBtn">Add New Address</button>
+        </div>
+
+        <div class="order-section">
+            <h3>Product Details</h3>
+            <p>Product Name: <span th:text="${product.prodName}"></span></p>
+            <p>Price: ₹<span id="price" th:text="${product.price}"></span></p>
+            <p>Discount: <span id="discountPercentage" th:text="${product.discount}"></span>%</p>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1"/>
+            </div>
+        </div>
+
+        <div class="order-section">
+            <h3>Total Amount</h3>
+            <p>Items Total: ₹<span id="subTotal"></span></p>
+            <p>Discount: ₹<span id="discount"></span></p>
+            <p>Order Total: ₹<span id="totalAmount"></span></p>
+        </div>
+
+        <div class="order-section">
+            <h3>Payment Method</h3>
+            <div class="form-group">
+                <select name="paymentMethod" required>
+                    <option value="" selected>Select the Payment Type</option>
+                    <option value="CREDIT_CARD">Credit Card</option>
+                    <option value="DEBIT_CARD">Debit Card</option>
+                    <option value="NET_BANKING">Net Banking</option>
+                    <option value="UPI">UPI</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button type="submit" class="confirm-btn">Confirm Order</button>
+            <a th:href="@{/displayProducts?(custId=${customer.custId})}" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+
+&lt;!&ndash; Add Address Modal &ndash;&gt;
+<div id="addAddressModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Add New Address</h3>
+        <form th:action="@{/addOrderAddress/{custId}(custId=${customer.custId})}" method="post">
+            <input type="hidden" name="customerId" th:value="${customer.custId}">
+            <input type="hidden" name="prodId" th:value="${product.prodId}">
+            <div class="form-group">
+                <label for="addLine">Address Line:</label>
+                <input type="text" id="addLine" name="addLine" required />
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required />
+            </div>
+            <div class="form-group">
+                <label for="pincode">Pincode:</label>
+                <input type="number" id="pincode" name="pincode" required />
+            </div>
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" required />
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" required />
+            </div>
+
+            <button type="submit" class="submit-btn">Add Address</button>
+        </form>
+    </div>
+</div>
+
+&lt;!&ndash; Modal for displaying messages &ndash;&gt;
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+<script>
+    function calculateTotal() {
+        const price = parseFloat(document.getElementById("price").textContent);
+        const discountPercentage = parseFloat(document.getElementById("discountPercentage").textContent);
+        const quantity = parseInt(document.getElementById("quantity").value);
+
+        const subTotal = price * quantity;
+        const discount = (subTotal * discountPercentage) / 100;
+        const totalAmount = subTotal - discount;
+
+        document.getElementById("subTotal").textContent = subTotal.toFixed(2);
+        document.getElementById("discount").textContent = discount.toFixed(2);
+        document.getElementById("totalAmount").textContent = totalAmount.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateTotal();  // Initial calculation
+        document.getElementById('quantity').addEventListener('input', calculateTotal);
+
+        // Handle status message from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        if (status && msg) {
+            const statusModal = document.getElementById('statusModal');
+            const modalMessage = document.getElementById('modalMessage');
+
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            statusModal.style.display = 'block';
+        }
+
+        // Add Address Modal
+        const addAddressBtn = document.getElementById('addAddressBtn');
+        const addAddressModal = document.getElementById('addAddressModal');
+        const closeBtns = document.querySelectorAll('.modal .close');
+
+        // Open the Add Address modal
+        addAddressBtn.onclick = function() {
+            addAddressModal.style.display = 'block';
+        };
+
+        // Close modals when close button is clicked
+        closeBtns.forEach(function(closeBtn) {
+            closeBtn.onclick = function() {
+                closeBtn.closest('.modal').style.display = 'none';
+            };
+        });
+
+        // Close modals when clicking outside of the modal content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+    });
+});
+</script>
+
+</body>
+</html>
+-->

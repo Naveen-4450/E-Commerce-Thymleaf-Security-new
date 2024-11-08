@@ -1,0 +1,11 @@
+upto here all done, for spring security
+
+--> no need to give customerID manually in alert box (along with credentials only it's taking)(we taken custId feild in credentials table)
+
+-->if we give, cust cred's in admin loginForm/ admin cred's in cust loginForm now it's displaying access denied page.(every thing is working as expected)
+
+-->all problems done upto Spring security 
+
+
+
+-->but that customeraddress deleting is not working after placing order(it mainataining the foreign key)(solution: take the address again in another table or order table after placing order)

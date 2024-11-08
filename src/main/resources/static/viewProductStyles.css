@@ -1,0 +1,91 @@
+body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+          background-color: #f9f9f9;
+          font-size: 14px;
+          text-align: center; /* Center-aligns the content including the back button */
+        }
+      h1 {
+          color: #333;
+          font-size: 1.5em; /* Adjust heading size if needed */
+      }
+      table {
+          width: 100%;
+          border-collapse: collapse;
+          background-color: #fff;
+      }
+      th, td {
+          padding: 15px; /* Increase padding for larger cell size */
+          border: 1px solid #ddd;
+          text-align: left;
+      }
+      th {
+          background-color: #4CAF50;
+          color: #fff;
+      }
+      tr:nth-child(even) {
+          background-color: #f2f2f2;
+      }
+      tr:hover {
+          background-color: #e0e0e0;
+      }
+      .actions a {
+          display: inline-block;
+          padding: 8px 12px;
+          text-decoration: none;
+          color: #fff;
+          border-radius: 4px;
+          text-align: center;
+          transition: background-color 0.3s;
+          font-size: 14px;
+          border: none;
+      }
+      .update {
+          background-color: #ffc107; /* Yellow */
+      }
+      .update:hover {
+          background-color: #e0a800;
+      }
+      .update:active {
+          background-color: #d39e00;
+      }
+      .delete {
+          display: inline-block;
+          padding: 8px 12px;
+          text-decoration: none;
+          color: #fff;
+          border-radius: 4px;
+          text-align: center;
+          background-color: #dc3545; /* Red */
+          transition: background-color 0.3s;
+          font-size: 14px;
+          border: none;
+          cursor: pointer; /* Add cursor pointer to mimic a button */
+      }
+      .delete:hover {
+          background-color: #c82333;
+      }
+      .delete:active {
+          background-color: #bd2130;
+      }
+
+        .back-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #4CAF50; /* Green background */
+          color: white; /* White text */
+          text-decoration: none;
+          border-radius: 5px;
+          font-size: 16px;
+          font-weight: bold;
+          transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+          background-color: #45a049; /* Darker green on hover */
+        }
+
+        .back-button:active {
+          background-color: #388e3c; /* Even darker green on click */
+        }

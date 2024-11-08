@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Product</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/addProductStyles.css}">
+
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%; /* Could be more or less, depending on screen size */
+            text-align :center;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+            font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+            font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+    </style>
+
+</head>
+<body>
+<h1>Add Product</h1>
+<form th:action="@{/addProduct}" method="post" enctype="multipart/form-data">
+    <div class="field-container">
+        <div>
+            <label for="prodName">Product Name:</label>
+            <input type="text" id="prodName" name="prodName" required/>
+        </div>
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+        </div>
+        <div>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" step="0.01" required/>
+        </div>
+        <div>
+            <label for="discount">Discount (%):</label>
+            <input type="number" id="discount" name="discount" min="0" max="100" required/>
+        </div>
+        <div>
+            <label for="prodImages">Product Images:</label>
+            <input type="file" id="prodImages" name="prodImages" multiple accept="image/*"/>
+        </div>
+        <div>
+            <label for="category">Category:</label>
+            <select id="category" name="cateId" required>
+                <option value="" disabled selected>Select a category</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.categoryId}"
+                        th:text="${category.categoryName}"></option>
+            </select>
+        </div>
+    </div>
+    <input type="submit" value="Add Product"/>
+</form>
+
+<a href="/productsManagement" class="back-button">Back</a>
+
+<!-- Modal for displaying messages -->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal display and closing -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        // Get the modal elements
+        const modal = document.getElementById('statusModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Display the modal with the message if status and msg parameters are present
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            modal.style.display = 'block';
+        }
+
+        // Get the <span> element that closes the modal
+        const span = document.querySelector('.close');
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

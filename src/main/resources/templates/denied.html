@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Access Denied</title>
+
+  <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        color: #333;
+    }
+    .denied-container {
+        background-color: #fff;
+        padding: 50px; /* Increased padding */
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 500px; /* Increased width */
+        text-align: center;
+       box-shadow: 0 20px 30px rgba(0, 0, 0, 0.45);
+    }
+    .denied-container h1 {
+        margin: 0 0 20px 0;
+        font-size: 36px; /* Increased font size */
+        color: #FF0000; /* Red color */
+    }
+    .denied-container p {
+        margin: 0 0 20px 0;
+        font-size: 20px; /* Increased font size */
+    }
+    .denied-container a {
+        display: inline-block;
+        padding: 12px 25px; /* Increased padding */
+        background-color: #4F46E5;
+        border: none;
+        border-radius: 6px;
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px; /* Increased font size */
+        transition: background-color 0.3s ease;
+    }
+    .denied-container a:hover {
+        background-color: #4338CA;
+    }
+  </style>
+</head>
+<body>
+<div class="denied-container">
+  <h1>**** Access Denied ****</h1>
+  <p>You do not have permission to access this page.</p>
+  <!-- Uncomment and set href if needed -->
+  <!-- <a th:href="@{/}" class="button">Go to Home</a> -->
+</div>
+</body>
+</html>

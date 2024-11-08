@@ -1,0 +1,367 @@
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" th:href="@{/cartStyles.css}">
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            align-text:center;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+	        font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+	        font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/displayProducts?(custId=${custId})}">Home&Products</a></li>
+            <li><a href="/profile">Profile</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Your Cart</h1>
+
+        &lt;!&ndash; Show this message if cartItems is null or cartItems.productQuantities is empty &ndash;&gt;
+        <div th:if="${cartItems == null || cartItems.productQuantities == null || cartItems.productQuantities.isEmpty()}">
+            <p align="center" style="color:red">Your cart is empty.</p>
+        </div>
+
+        &lt;!&ndash; Show cart items if cartItems.productQuantities is not empty &ndash;&gt;
+        <div th:if="${cartItems != null && !cartItems.productQuantities.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cartItem : ${cartItems.productQuantities}">
+                    <td th:text="${cartItem.prodName}">Product Name</td>
+                    <td th:text="${cartItem.quantity}">Quantity</td>
+                    <td th:text="'₹' + ${cartItem.price}">Price</td>
+                    <td th:text="'₹' + (${cartItem.price} * ${cartItem.quantity})">Total</td>
+                    <td>
+                        &lt;!&ndash; Remove item form &ndash;&gt;
+                        <form th:action="@{/removeProdCart}" method="post">
+                            <input type="hidden" name="_method" value="delete"/>
+                            <input type="hidden" name="prodId" th:value="${cartItem.prodId}"/>
+                            <input type="hidden" name="custId" th:value="${custId}"/>
+                            <button type="submit" class="remove-item-btn">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="cart-summary">
+                <p th:text="'Total: ₹' + ${cartTotal}">Total</p>
+
+                &lt;!&ndash; Proceed to Checkout button &ndash;&gt;
+                <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+                <br><br>
+
+                &lt;!&ndash; Clear cart form &ndash;&gt;
+                <form th:action="@{/clearCart/{custId}(custId=${custId})}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="clear-cart-btn">Clear Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+&lt;!&ndash; Modal for displaying messages &ndash;&gt;
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+&lt;!&ndash; JavaScript to handle modal display and closing &ndash;&gt;
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        // Get the modal elements
+        const modal = document.getElementById('statusModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Display the modal with the message if status and msg parameters are present
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            modal.style.display = 'block';
+        }
+
+        // Get the <span> element that closes the modal
+        const span = document.querySelector('.close');
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" th:href="@{/cartStyles.css}">
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            align-text:center;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+            font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+            font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/displayProducts?(custId=${custId})}">Home&Products</a></li>
+            <li><a th:href="@{/viewWishlist?(custId=${custId})}">Wishlist</a></li>
+            <li><a th:href="@{/customerProfile/{custId}(custId=${custId})}">Profile</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Your Cart</h1>
+
+        <!-- Show this message if cartItems is null or cartItems.productQuantities is empty -->
+        <div th:if="${cartItems == null || cartItems.productQuantities == null || cartItems.productQuantities.isEmpty()}">
+            <p align="center" style="color:red; font-weight:bold; font-size:20px;">Your cart is empty.</p>
+        </div>
+
+        <!-- Show cart items if cartItems.productQuantities is not empty -->
+        <div th:if="${cartItems != null && !cartItems.productQuantities.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Product Image</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cartItem : ${cartItems.productQuantities}">
+                    <td><img th:src="@{${cartItem.prodImages[0]}}" alt="Product Image"  class="cart-item-image"/></td>
+                    <td th:text="${cartItem.prodName}">Product Name</td>
+                    <td>
+                        <form th:action="@{/updateQuantity}" method="post" style="margin: 0;">
+                            <input type="hidden" name="prodId" th:value="${cartItem.prodId}"/>
+                            <input type="hidden" name="custId" th:value="${custId}"/>
+                            <input type="hidden" name="quantity" th:value="${cartItem.quantity}"/>
+                            <button type="submit" name="operation" value="decrease" class="quantity-btn">-</button>
+                        </form>
+
+                        <input type="number" name="quantity" th:value="${cartItem.quantity}" class="quantity-input" readonly/>
+
+                        <form th:action="@{/updateQuantity}" method="post" style="margin: 0;">
+                            <input type="hidden" name="prodId" th:value="${cartItem.prodId}"/>
+                            <input type="hidden" name="custId" th:value="${custId}"/>
+                            <input type="hidden" name="quantity" th:value="${cartItem.quantity}"/>
+                            <button type="submit" name="operation" value="increase" class="quantity-btn">+</button>
+                        </form>
+
+                    </td>
+                    <td th:text="'₹' + ${cartItem.price}">Price</td>
+                    <td th:text="'₹' + (${cartItem.price} * ${cartItem.quantity})">Total</td>
+                    <td>
+                        <!-- Remove item form -->
+                        <form th:action="@{/removeProdCart}" method="post">
+                            <input type="hidden" name="_method" value="delete"/>
+                            <input type="hidden" name="prodId" th:value="${cartItem.prodId}"/>
+                            <input type="hidden" name="custId" th:value="${custId}"/>
+                            <button type="submit" class="remove-item-btn">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="cart-summary">
+                <p th:text="'Total: ₹' + ${cartTotal}">Total</p>
+
+                <!-- Proceed to Checkout button -->
+                <a href="#" class="checkout-btn">Proceed to Checkout</a>
+                <br><br>
+
+                <!-- Clear cart form -->
+                <form th:action="@{/clearCart/{custId}(custId=${custId})}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="clear-cart-btn">Clear Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal for displaying messages -->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal display and closing -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        // Get the modal elements
+        const modal = document.getElementById('statusModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Display the modal with the message if status and msg parameters are present
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            modal.style.display = 'block';
+        }
+
+        // Get the <span> element that closes the modal
+        const span = document.querySelector('.close');
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

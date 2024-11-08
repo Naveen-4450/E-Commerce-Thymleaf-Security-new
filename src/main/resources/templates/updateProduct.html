@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Product</title>
+    <link rel="stylesheet" th:href="@{/updateProductStyles.css}">
+    <style>
+        /* Button Styles */
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 200px; /* Fixed width for consistency */
+            box-sizing: border-box; /* Ensure padding and border are included in the width */
+            margin: 5px; /* Space between buttons */
+        }
+
+        .update-button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        .cancel-button {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+
+        .cancel-button:hover {
+            background-color: #c62828; /* Darker red */
+        }
+
+        .form-row {
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap; /* Allows wrapping to the next line if needed */
+            gap: 10px; /* Space between images */
+        }
+
+        .image-container img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+
+
+        /* Delete Button Styles */
+.delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #ff4d4d; /* Red */
+    color: white;
+    padding: 5px;
+    border: none;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.delete-button:hover {
+    background-color: #cc0000; /* Darker red */
+}
+
+        /* Image Wrapper Styles */
+.image-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+
+    </style>
+</head>
+<body>
+<h1>Edit Product</h1>
+<form th:action="@{/updateProduct/{prodId}(prodId=${product.prodId})}" th:object="${product}" method="post" enctype="multipart/form-data">
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="prodId">Product ID:</label>
+            <input type="number" id="prodId" name="prodId" th:field="*{prodId}" readonly />
+        </div>
+
+        <div class="form-group">
+            <label for="prodName">Name:</label>
+            <input type="text" id="prodName" name="prodName" th:field="*{prodName}" required />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" th:field="*{description}" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" name="price" id="price" th:field="*{price}" required />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="discount">Discount:</label>
+            <input type="number" name="discount" id="discount" th:field="*{discount}" required />
+        </div>
+
+        <div class="form-group">
+            <label for="stockAvail">Status:</label>
+            <select name="stockAvail" id="stockAvail" th:field="*{stockAvail}" required>
+                <option value="AVAILABLE" th:selected="*{stockAvail} == 'AVAILABLE'">Available</option>
+                <option value="NOT_AVAILABLE" th:selected="*{stockAvail} == 'NOT_AVAILABLE'">Not Available</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="prodImages">Images:</label>
+            <input type="file" name="prodImages" id="prodImages" th:field="*{prodImages}" multiple />
+        </div>
+    </div>
+
+   <!-- <div class="form-row">
+        <div class="form-group">
+            <label>Existing Images:</label>
+            <div class="image-container">
+                <div th:each="image : ${product.prodImages}">
+                    <img th:src="@{${image}}" alt="Product Image">
+                </div>
+            </div>
+        </div>
+    </div>-->
+
+    <div class="form-row">
+        <div class="form-group">
+            <label>Existing Images:</label>
+            <div class="image-container">
+                <div th:each="image : ${product.prodImages}" class="image-wrapper">
+                    <img th:src="@{${image}}" alt="Product Image">
+
+                    <a th:href="@{/removeProductImage(prodId=${product.prodId}, imageUrl=${image})}"
+                       class="delete-button">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="form-row">
+        <button type="submit" class="button update-button">Update Product</button>
+        <a href="/viewProducts" class="button cancel-button">Cancel</a>
+    </div>
+</form>
+
+
+</body>
+</html>

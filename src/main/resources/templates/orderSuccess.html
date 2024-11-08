@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Success</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("");
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: black;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px #000000;
+        }
+
+        p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px #000000;
+        }
+
+        .return-button {
+            text-decoration: none;
+            background-color: #28a745;
+            color: #ffffff;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+            text-shadow: 2px #000000;
+        }
+
+        .return-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<h1>Order Successfully Placed!</h1>
+<p>Your order will be delivered in the next 4-5 working days. Thank you for shopping with us!</p>
+<a th:href="@{/displayProducts?(custId=${custId})}" class="return-button">Next!</a>
+</body>
+</html>

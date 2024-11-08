@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin HomePage Dashboard</title>
+    <style>
+        body {
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: white;
+            text-align: center;
+            padding: 30px; /* Increased padding for better spacing */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Softer shadow */
+            width: 650px; /* Adjusted width for better proportion */
+            max-width: 100%; /* Responsive width */
+            box-sizing: border-box; /* Ensures padding is included in width */
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.45); /* Increased shadow effect */
+        }
+
+        h1 {
+            color: #004d99; /* Dark Blue color for the header */
+            font-size: 2.5em;
+            margin-bottom: 30px; /* Increased space below the header */
+        }
+
+        a {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: white;
+            background-color: #007BFF;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        a:active {
+            background-color: #004494; /* Darker Blue for active state */
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Admin Dashboard</h1>
+    <a href="/categoryManagement">Category Management</a> <br>
+    <a href="/productsManagement">Products Management</a> <br>
+    <a href="/ordersManagement"> &nbsp; Orders Management &nbsp; </a><br>
+
+    <a href="/logout">Logout</a>
+</div>
+
+</body>
+</html>

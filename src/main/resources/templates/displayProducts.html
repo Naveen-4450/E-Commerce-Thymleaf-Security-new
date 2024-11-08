@@ -1,0 +1,371 @@
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link rel="stylesheet" th:href="@{/displayProductStyles.css}">
+
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%; /* Could be more or less, depending on screen size */
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+	    font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+	    font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+    </style>
+
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/profile">Profile</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Product List</h1>
+        <div class="product-grid">
+            <div class="product-card" th:each="product : ${products}">
+                <img th:src="@{/images/${product.prodImages}}" alt="Product Image" class="product-image">
+                <div class="product-info">
+                    <h2 th:text="${product.prodName}">Product Name</h2>
+                    <p th:text="${product.description}">Product Description</p>
+                    <p class="product-price" th:text="'₹' + ${product.price}">Price</p>
+                    <p class="product-discount" th:text="'Discount: ' + ${product.discount} + '%'">Discount</p>
+                    <p class="product-stock" th:text="'Stock Available: ' + ${product.stockAvail}">Stock Available</p>
+
+                    <button class="add-to-cart-btn"
+                            th:onclick="'addToCart(' + ${product.prodId} + ', ' + ${custId} + ')'">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+&lt;!&ndash; Modal &ndash;&gt;
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p th:text="${message}">Your message here</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+&lt;!&ndash; Script to show modal &ndash;&gt;
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var showModal = /*[[${showModal}]]*/ 'false';
+    if (showModal === 'true') {
+        $('#messageModal').modal('show');
+    }
+    /*]]>*/
+</script>
+
+&lt;!&ndash;
+&lt;!&ndash; Modal for displaying messages &ndash;&gt;
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+&ndash;&gt;
+
+&lt;!&ndash; JavaScript to handle modal display and closing &ndash;&gt;
+<script>
+    function addToCart(prodId, custId) {
+           const quantity = 1; // Assuming 1 for now, can be modified to get quantity from user input
+
+           fetch('/cart', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/x-www-form-urlencoded',
+               },
+               body: `prodId=${prodId}&custId=${custId}&quantity=${quantity}`
+           })
+           .then(response => response.text())
+           .then(data => {
+               alert(data);
+           })
+           .catch(error => {
+               console.error('Error:', error);
+           });
+       }
+
+
+
+</script>
+
+</body>
+</html>
+
+&lt;!&ndash;
+
+ document.addEventListener("DOMContentLoaded", function() {
+       // Get URL parameters
+       const urlParams = new URLSearchParams(window.location.search);
+       const status = urlParams.get('status');
+       const msg = urlParams.get('msg');
+
+       // Get the modal elements
+       const modal = document.getElementById('statusModal');
+       const modalMessage = document.getElementById('modalMessage');
+
+       // Display the modal with the message if status and msg parameters are present
+       if (status && msg) {
+           modalMessage.textContent = decodeURIComponent(msg);
+           modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+           modal.style.display = 'block';
+       }
+
+       // Get the <span> element that closes the modal
+       const span = document.querySelector('.close');
+
+       // When the user clicks on <span> (x), close the modal
+       if (span) {
+           span.onclick = function() {
+               modal.style.display = "none";
+           }
+       }
+
+       // When the user clicks anywhere outside of the modal, close it
+       window.onclick = function(event) {
+           if (event.target == modal) {
+               modal.style.display = "none";
+           }
+       }
+   });&ndash;&gt;-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link rel="stylesheet" th:href="@{/displayProductStyles.css}">
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            align-text:center;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+	        font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+	        font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/viewWishlist?(custId=${custId})}">Wishlist</a></li>
+            <li><a th:href="@{/viewCart?(custId=${custId})}">Cart</a></li>
+            <li><a th:href="@{/customerProfile/{custId}(custId=${custId})}">Profile</a></li>
+            <li><a th:href="@{/viewAllOrders/{custId}(custId=${custId})}">view-Orders</a></li> <!-- For Path Variable-->
+        </ul>
+    </nav>
+</header>
+<main>
+    <div class="container">
+        <h1>*** All Products ***</h1>
+        <div class="product-grid">
+            <div class="product-card" th:each="product : ${products}">
+<!--                <img th:src="@{/images/${product.prodImages}}" alt="Product Image" class="product-image">
+                <img th:each="image : ${product.prodImages}" th:src="@{${image}}" alt="Product Image" class="product-image">-->
+                <img th:src="@{${product.prodImages[0]}}" alt="Product Image" class="product-image">
+                <div class="product-info">
+                    <h2 th:text="${product.prodName}">Product Name</h2>
+                    <p th:text="${product.description}">Product Description</p>
+                    <p class="product-price" th:text="'₹' + ${product.price}">Price</p>
+                    <p class="product-discount" th:text="'Discount: ' + ${product.discount} + '%'">Discount</p>
+
+<!--                    <p class="product-stock" th:text="'Stock Available: ' + ${product.stockAvail}">Stock Available</p>-->
+
+                    <p class="product-stock">
+                        <span th:with="stock=${product.stockAvail.toString()}">
+                            <span th:if="${stock == 'AVAILABLE'}">Stock : <span style="color:green; font-weight:bold;">In Stock</span></span>
+                            <span th:if="${stock == 'NOT_AVAILABLE'}">Stock : <span style="color:red; font-weight:bold;">Out of Stock</span></span>
+                        </span>
+                    </p>
+
+                    <div class="button-container">
+                        <form th:action="@{/cart}" method="post">
+                            <input type="hidden" name="prodId" th:value="${product.prodId}">
+                            <input type="hidden" name="custId" th:value="${custId}"> <!--these hidden fields automatically send with form-->
+                            <input type="hidden" name="quantity" value="1"> <!-- Default quantity is 1 -->
+                            <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                        </form>
+
+                        <form th:action="@{/{custId}/addProdWishlist/{prodId}(custId=${custId} ,prodId=${product.prodId})}" method="post">
+                            <button type="submit" class="add-to-wishlist-btn">Add to wishlist</button>
+                        </form>
+                    </div>
+                    <form th:action="@{/placeOneOrder}" method="get">
+                        <input type="hidden" name="custId" th:value="${custId}">
+                        <input type="hidden" name="prodId" th:value="${product.prodId}">    <!--these hidden fields automatically send with form-->
+<!--                        <input type="hidden" name="quantity" value="1">-->
+                        <button type="submit" class="order-placing-btn">Buy Now</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<!-- Modal for displaying messages -->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal display and closing -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        // Get the modal elements
+        const modal = document.getElementById('statusModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Display the modal with the message if status and msg parameters are present
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            modal.style.display = 'block';
+        }
+
+        // Get the <span> element that closes the modal
+        const span = document.querySelector('.close');
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+
+
+</body>
+</html>
+
+

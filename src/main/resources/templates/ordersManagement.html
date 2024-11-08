@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders Management</title>
+    <link rel="stylesheet" th:href="@{/cateManagement.css}">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+	    font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+	    font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border: none; /* Remove default border */
+        }
+
+        .button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .button:active {
+            background-color: #004085; /* Even darker blue on click */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a shadow effect on click */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Admin Dashboard - Orders Management</h1>
+
+<main>
+    <section class="product-management">
+        <h2>Manage Orders</h2>
+        <div class="button-group">
+            <a href="#" class="button" id="viewOneCustOrdersBtn">View Customer Orders</a>
+<!--
+<a th:href="@{/}" class="button">View One Order</a>-->
+        </div>
+    </section>
+    <div class="home-link-container">
+        <a class="button" th:href="@{/adminHome}">Back to Dashboard</a>
+    </div>
+</main>
+
+<!--Displaying Modal for entering Customer ID -->
+<div id="customerIdModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Which Customer Orders you want..?</h2>
+        <form id="custIdForm" method="get">
+            <input type="number" id="custIdInput" name="custId" required placeholder="Enter Customer ID"/><br>
+            <button type="submit" class="button">Submit</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for displaying messages for Success msg or Fail msg-->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const customerIdModal = document.getElementById('customerIdModal');
+        const statusModal = document.getElementById('statusModal');
+        const closeBtns = document.querySelectorAll('.close');
+        const viewOneCustOrdersBtn = document.getElementById('viewOneCustOrdersBtn');
+        const custIdForm = document.getElementById('custIdForm');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Function to close a modal
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        // Open Customer ID Modal on button click
+        if (viewOneCustOrdersBtn) {
+            viewOneCustOrdersBtn.onclick = function() {
+                customerIdModal.style.display = 'block';
+            };
+        }
+
+        // Handle close button click for both modals
+        closeBtns.forEach(function(btn) {
+            btn.onclick = function() {
+                closeModal(btn.closest('.modal'));
+            };
+        });
+
+        // Close modals when clicking outside of them
+        window.onclick = function(event) {
+            if (event.target == customerIdModal) {
+                closeModal(customerIdModal);
+            } else if (event.target == statusModal) {
+                closeModal(statusModal);
+            }
+        };
+
+        // Handle Customer ID form submission
+        if (custIdForm) {
+            custIdForm.onsubmit = function(event) {
+                event.preventDefault(); // Prevent default form submission
+                const custId = document.getElementById('custIdInput').value;
+                if (custId) {
+                    // Redirect to the viewOneProduct API endpoint
+                    window.location.href = `/customerAllOrders?custId=${custId}`;  // API endpoint in Admin Controller
+                }
+            };
+        }
+
+        // Handle Status Modal display
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            statusModal.style.display = 'block';
+        }
+    });
+</script>
+
+
+
+</body>
+</html>

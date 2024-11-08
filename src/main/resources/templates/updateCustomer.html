@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Customer Details</title>
+    <link rel="stylesheet" th:href="@{/customerProfileStyles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 80px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            font-size: 28px;
+            color: #333;
+            border-bottom: 2px solid #e1e1e1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .button.cancel {
+            background-color: #6c757d;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.cancel:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+<!--<header class="header">
+    <div class="nav-container">
+        <nav>
+            <ul>
+                <li><a th:href="@{/displayProducts?(custId=${customer.custId})}">Home & Products</a></li>
+                <li><a th:href="@{/viewWishlist?(custId=${customer.custId})}">Wishlist</a></li>
+                <li><a th:href="@{/viewCart?(custId=${customer.custId})}">Cart</a></li>
+                <li><a th:href="@{/viewAllOrders/{custId}(custId=${customer.custId})}">View Orders</a></li>
+            </ul>
+        </nav>
+    </div>
+    <a href="#" class="button logout-btn">Logout</a>
+</header>-->
+
+<div class="container">
+    <h2>Edit Your Details</h2>
+
+    <form th:action="@{/updateCustomer/{custId}(custId=${customer.custId})}" method="post">
+        <div class="form-group">
+            <label for="CustomerId">First Name</label>
+            <input type="text" id="CustomerId" th:value="${customer.custId}" readonly/>
+        </div>
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" th:value="${customer.firstName}"/>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" th:value="${customer.lastName}"/>
+        </div>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" th:value="${customer.username}"/>
+        </div>
+        <div class="form-group">
+            <label for="mobile">Mobile</label>
+            <input type="number" id="mobile" name="mobile" maxlength="10" th:value="${customer.mobile}"/>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" th:value="${customer.email}"/>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="button">Save Changes</button>
+            <a th:href="@{/customerProfile/{custId}(custId=${customer.custId})}" class="button cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

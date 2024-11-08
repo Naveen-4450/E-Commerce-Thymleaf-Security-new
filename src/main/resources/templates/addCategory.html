@@ -1,0 +1,180 @@
+<!--
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Category</title>
+    <link rel="stylesheet" th:href="@{/addCateStyles.css}">
+
+</head>
+<body>
+<header>
+    <h1>Admin Dashboard - Add Category</h1>
+    &lt;!&ndash;<nav>
+        <a th:href="@{/category/add}">Add Category</a>
+        <a th:href="@{/category/viewAll}">View All Categories</a>
+    </nav>&ndash;&gt;
+</header>
+
+<main>
+    <section class="addCateForm">
+        <h2>Add New Category</h2>
+        <form  th:action="@{/addCategory}" method="post" th:onsubmit="return showSuccessModal()">
+            <label for="categoryName">Category Name:</label>
+            <input type="text" id="categoryName" name="categoryName" required><br>
+            <button type="submit" class="button">Add Category</button>
+        </form>
+    </section>
+</main>
+
+&lt;!&ndash; Success Modal &ndash;&gt;
+<div id="successModal" class="modal" th:if="${categoryAdded}" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeSuccessModal()">&times;</span>
+        <p>Category Added Successfully</p>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    function showSuccessModal() {
+        document.getElementById("successModal").style.display = "block";
+    }
+
+    function closeSuccessModal() {
+        document.getElementById("successModal").style.display = "none";
+    }
+</script>
+
+<footer>
+    <p>&copy; 2024 E-Commerce Platform</p>
+</footer>
+</body>
+</html>
+-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Category</title>
+    <link rel="stylesheet" th:href="@{/addCateStyles.css}">
+
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            text-align:center;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Success and Fail message styles */
+        .success-msg {
+            color: green;
+            font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+        .fail-msg {
+            color: red;
+            font-weight: bold;
+            font-style: italic;
+            font-size:18px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Admin Dashboard - Add Category</h1>
+</header>
+
+<main>
+    <section class="addCateForm">
+        <h2>Add New Category</h2>
+        <form th:action="@{/addCategory}" method="post">
+            <label for="categoryName">Category Name:</label>
+            <input type="text" id="categoryName" name="categoryName" required><br>
+            <button type="submit" class="button">Add Category</button> <br>
+
+            <div class="home-link-container">
+                <a class="back-button" th:href="@{/categoryManagement}"> Back </a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<!-- Modal for displaying messages -->
+<div id="statusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal display and closing -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const msg = urlParams.get('msg');
+
+        // Get the modal elements
+        const modal = document.getElementById('statusModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Display the modal with the message if status and msg parameters are present
+        if (status && msg) {
+            modalMessage.textContent = decodeURIComponent(msg);
+            modalMessage.className = status === 'success' ? 'success-msg' : 'fail-msg';
+            modal.style.display = 'block';
+        }
+
+        // Get the <span> element that closes the modal
+        const span = document.querySelector('.close');
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+</script>
+</body>
+</html>
